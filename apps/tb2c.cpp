@@ -1,8 +1,11 @@
-#include "tb2c/example.h"
+#include <iostream>
+#include "tb2c/lexer.h"
 
 int main()
 {
-    print_greeting("Sam");
+    Lexer lexer("");
+
+    lexer.abort();
 
     return 0;
 }
