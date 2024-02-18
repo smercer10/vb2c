@@ -65,6 +65,32 @@ Token Lexer::get_token()
             abort("Expected \"!=\", got \"!" + std::string(1, peek()) + "\"");
         }
         break;
+    case '<':
+        if (peek() == '=')
+        {
+            token.text = "<=";
+            token.type = LTEQ;
+            next_char();
+        }
+        else
+        {
+            token.text = curr_char;
+            token.type = LT;
+        }
+        break;
+    case '>':
+        if (peek() == '=')
+        {
+            token.text = ">=";
+            token.type = GTEQ;
+            next_char();
+        }
+        else
+        {
+            token.text = curr_char;
+            token.type = GT;
+        }
+        break;
     default:
         abort("Unknown token \"" + std::string(1, curr_char) + "\"");
         next_char();
