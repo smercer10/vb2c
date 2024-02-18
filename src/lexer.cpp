@@ -68,7 +68,7 @@ char Lexer::peek()
 
 void Lexer::skip_whitespace()
 {
-    while (std::isspace(curr_char))
+    while (curr_char == ' ' || curr_char == '\t' || curr_char == '\r')
     {
         next_char();
     }

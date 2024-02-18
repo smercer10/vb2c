@@ -5,9 +5,11 @@
 
 int main()
 {
-    Lexer lexer("- */     +/");
 
-    Token token = lexer.get_token();
+    std::string source{"-*/+/"};
+    Lexer lexer(source);
+
+    Token token{lexer.get_token()};
 
     while (token.type != TokenType::EOFILE)
     {

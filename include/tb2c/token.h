@@ -4,7 +4,7 @@
 enum class TokenType
 {
     // Enumerators are capitalized to avoid conflict with C++ keywords
-    //
+
     // Special tokens
     EOFILE, // Can't use EOF because it's a macro in cstdio
     NL,
