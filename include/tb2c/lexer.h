@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "tb2c/token.h"
 
 class Lexer
 {
@@ -9,10 +10,11 @@ public:
           curr_char{' '},
           curr_pos{-1}
     {
+        next_char();
     }
 
-    std::string get_token();
-    void abort();
+    Token get_token();
+    void abort(std::string message);
     void next_char();
     char peek();
 
