@@ -6,7 +6,7 @@
 int main()
 {
 
-    std::string source{"-*/+/"};
+    std::string source{"-*/+/\n!x"};
     Lexer lexer(source);
 
     Token token{lexer.get_token()};

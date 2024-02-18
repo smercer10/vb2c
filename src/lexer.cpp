@@ -21,6 +21,8 @@ Token Lexer::get_token()
     case '\n':
         token.text = curr_char;
         token.type = NL;
+        ++line_num;
+        col_num = 1;
         break;
     case '+':
         token.text = curr_char;
@@ -38,8 +40,33 @@ Token Lexer::get_token()
         token.text = curr_char;
         token.type = DIV;
         break;
+    case '=':
+        if (peek() == '=')
+        {
+            token.text = "==";
+            token.type = EQEQ;
+            next_char();
+        }
+        else
+        {
+            token.text = curr_char;
+            token.type = EQ;
+        }
+        break;
+    case '!':
+        if (peek() == '=')
+        {
+            token.text = "!=";
+            token.type = NOTEQ;
+            next_char();
+        }
+        else
+        {
+            abort("Expected \"!=\", got \"!" + std::string(1, peek()) + "\"");
+        }
+        break;
     default:
-        abort("Unknown token: '" + std::string(1, curr_char) + "'");
+        abort("Unknown token \"" + std::string(1, curr_char) + "\"");
         next_char();
     }
 
@@ -50,7 +77,8 @@ Token Lexer::get_token()
 
 void Lexer::abort(std::string message)
 {
-    std::cerr << "Lexer error. " + message + "\n";
+    std::cerr << "Lexer error: " + message
+              << "\nLn " << line_num << ", Col " << col_num - 1 << "\n";
 
     std::exit(EXIT_FAILURE);
 }
@@ -58,6 +86,7 @@ void Lexer::abort(std::string message)
 void Lexer::next_char()
 {
     ++curr_pos;
+    ++col_num;
     curr_char = (curr_pos >= source.length()) ? '\0' : source[curr_pos];
 }
 
