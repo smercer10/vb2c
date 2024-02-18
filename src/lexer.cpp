@@ -1,9 +1,8 @@
 #include "tb2c/lexer.h"
 #include "tb2c/token.h"
-#include <iostream>
-#include <cstdlib>
 #include <cctype>
-#include <vector>
+#include <cstdlib>
+#include <iostream>
 
 Token Lexer::get_token()
 {
@@ -17,12 +16,12 @@ Token Lexer::get_token()
     switch (curr_char)
     {
     case '\0':
-        token.chars = curr_char;
-        token.type = EOFILE;
+        token.value = curr_char;
+        token.type = eof_;
         break;
     case '\n':
-        token.chars = curr_char;
-        token.type = NL;
+        token.value = curr_char;
+        token.type = newline_;
         ++line_num;
         col_num = 1;
         break;
@@ -45,8 +44,8 @@ Token Lexer::get_token()
             next_char();
         }
 
-        token.chars = chars;
-        token.type = STR;
+        token.value = chars;
+        token.type = string_;
         break;
     }
     case '0' ... '9':
@@ -82,44 +81,73 @@ Token Lexer::get_token()
             }
         }
 
-        token.chars = chars;
-        token.type = NUM;
+        token.value = chars;
+        token.type = number_;
         break;
     }
+    case 'A' ... 'Z':
+    case 'a' ... 'z':
+    {
+        std::string chars;
+
+        chars += curr_char;
+
+        // Get all consecutive alphanumeric characters and underscores
+        while (std::isalnum(peek()) || peek() == '_')
+        {
+            next_char();
+            chars += curr_char;
+        }
+
+        // Check if the token is a keyword
+        if (Token::is_keyword(Token::type_from_string(chars)))
+        {
+            token.type = Token::type_from_string(chars);
+            token.value = chars;
+        }
+        // Otherwise, it's an identifier
+        else
+        {
+            token.type = identifier_;
+            token.value = chars;
+        }
+        break;
+    }
+
     case '+':
-        token.chars = curr_char;
-        token.type = PLUS;
+        token.value = curr_char;
+        token.type = plus_;
         break;
     case '-':
-        token.chars = curr_char;
-        token.type = MINUS;
+        token.value = curr_char;
+        token.type = minus_;
         break;
     case '*':
-        token.chars = curr_char;
-        token.type = MULT;
+        token.value = curr_char;
+        token.type = mult_;
         break;
     case '/':
-        token.chars = curr_char;
-        token.type = DIV;
+        token.value = curr_char;
+        token.type = div_;
         break;
     case '=':
         if (peek() == '=')
         {
-            token.chars = "==";
-            token.type = EQEQ;
+            token.value = "==";
+            token.type = eqeq_;
             next_char();
         }
         else
         {
-            token.chars = curr_char;
-            token.type = EQ;
+            token.value = curr_char;
+            token.type = eq_;
         }
         break;
     case '!':
         if (peek() == '=')
         {
-            token.chars = "!=";
-            token.type = NOTEQ;
+            token.value = "!=";
+            token.type = noteq_;
             next_char();
         }
         else
@@ -130,27 +158,27 @@ Token Lexer::get_token()
     case '<':
         if (peek() == '=')
         {
-            token.chars = "<=";
-            token.type = LTEQ;
+            token.value = "<=";
+            token.type = lteq_;
             next_char();
         }
         else
         {
-            token.chars = curr_char;
-            token.type = LT;
+            token.value = curr_char;
+            token.type = lt_;
         }
         break;
     case '>':
         if (peek() == '=')
         {
-            token.chars = ">=";
-            token.type = GTEQ;
+            token.value = ">=";
+            token.type = gteq_;
             next_char();
         }
         else
         {
-            token.chars = curr_char;
-            token.type = GT;
+            token.value = curr_char;
+            token.type = gt_;
         }
         break;
     default:
@@ -163,9 +191,9 @@ Token Lexer::get_token()
     return token;
 }
 
-void Lexer::abort(std::string message)
+void Lexer::abort(std::string msg)
 {
-    std::cerr << "Lexer error: " + message
+    std::cerr << "Lexer error: " + msg
               << "\nLn " << line_num << ", Col " << col_num - 1 << "\n";
 
     std::exit(EXIT_FAILURE);

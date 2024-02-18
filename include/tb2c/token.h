@@ -1,47 +1,49 @@
 #pragma once
 #include <string>
 
+// Enumerators are suffixed with an underscore to avoid conflicts with C++ keywords
 enum class TokenType
 {
-    // Enumerators are capitalized to avoid conflict with C++ keywords
-
     // Special tokens
-    EOFILE, // Can't use EOF because it's a macro in cstdio
-    NL,
-    NUM,
-    ID,
-    STR,
-    // Tiny BASIC Keywords
-    LABEL,
-    GOTO,
-    PRINT,
-    INPUT,
-    LET,
-    IF,
-    THEN,
-    ENDIF,
-    WHILE,
-    REPEAT,
-    ENDWHILE,
+    eof_,
+    newline_,
+    number_,
+    identifier_,
+    string_,
+    // Keywords
+    label_,
+    goto_,
+    print_,
+    input_,
+    let_,
+    if_,
+    then_,
+    endif_,
+    while_,
+    repeat_,
+    endwhile_,
     // Operators
-    EQ,
-    PLUS,
-    MINUS,
-    MULT,
-    DIV,
-    EQEQ,
-    NOTEQ,
-    LT,
-    LTEQ,
-    GT,
-    GTEQ,
+    eq_,
+    plus_,
+    minus_,
+    mult_,
+    div_,
+    eqeq_,
+    noteq_,
+    lt_,
+    lteq_,
+    gt_,
+    gteq_,
 };
 
 class Token
 {
 public:
-    std::string chars;
+    std::string value;
     TokenType type;
 
-    std::string get_type_as_string();
+    std::string type_as_string(); // For debugging
+
+    static TokenType type_from_string(std::string str);
+    static bool is_keyword(TokenType type);
 };
