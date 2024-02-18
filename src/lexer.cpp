@@ -3,10 +3,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <cctype>
+#include <vector>
 
 Token Lexer::get_token()
 {
     skip_whitespace();
+    skip_comment();
 
     Token token;
 
@@ -14,6 +16,27 @@ Token Lexer::get_token()
 
     switch (curr_char)
     {
+    case '"':
+    {
+        std::string text;
+        std::string illegal_chars{"\r\n\t\\%"}; // Avoid issues with emitted C code
+
+        next_char();
+        while (curr_char != '"')
+        {
+            if (illegal_chars.find(curr_char) != std::string::npos)
+            {
+                abort("Illegal character in string");
+            }
+
+            text += curr_char;
+            next_char();
+        }
+
+        token.text = text;
+        token.type = STR;
+        break;
+    }
     case '\0':
         token.text = curr_char;
         token.type = EOFILE;
@@ -126,5 +149,16 @@ void Lexer::skip_whitespace()
     while (curr_char == ' ' || curr_char == '\t' || curr_char == '\r')
     {
         next_char();
+    }
+}
+
+void Lexer::skip_comment()
+{
+    if (curr_char == '#')
+    {
+        while (curr_char != '\n')
+        {
+            next_char();
+        }
     }
 }

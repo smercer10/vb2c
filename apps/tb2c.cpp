@@ -6,7 +6,7 @@
 int main()
 {
 
-    std::string source{">=><\n<=!===/=-*/+/\nx"};
+    std::string source{">=><\n#<=!=\n\"hello\"==/=\"-*/+/"};
     Lexer lexer(source);
 
     Token token{lexer.get_token()};
