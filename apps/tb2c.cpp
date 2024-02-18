@@ -5,9 +5,7 @@
 
 int main()
 {
-
-    std::string source{">=><\n#<=!=\n\"hello\"==/=\"-*/+/"};
-    Lexer lexer(source);
+    Lexer lexer("+-123 9.8654*/");
 
     Token token{lexer.get_token()};
 

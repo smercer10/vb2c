@@ -40,7 +40,7 @@ enum class TokenType
 class Token
 {
 public:
-    std::string text;
+    std::string chars;
     TokenType type;
 
     std::string get_type_as_string();

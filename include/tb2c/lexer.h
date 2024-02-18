@@ -6,8 +6,8 @@ class Lexer
 {
 public:
     Lexer(std::string tb_code)
-        : source{tb_code + "\n"},
-          curr_char{' '},
+        : source{tb_code + '\n'},
+          curr_char{'\0'},
           curr_pos{-1},
           line_num{1},
           col_num{1}
