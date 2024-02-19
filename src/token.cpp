@@ -8,7 +8,7 @@ std::string Token::type_as_string()
     switch (type)
     {
     case eof_:
-        return "eof";
+        return "EOF";
     case newline_:
         return "newline";
     case number_:
@@ -18,49 +18,49 @@ std::string Token::type_as_string()
     case string_:
         return "string";
     case label_:
-        return "label";
+        return "LABEL";
     case goto_:
-        return "goto";
+        return "GOTO";
     case print_:
-        return "print";
+        return "PRINT";
     case input_:
-        return "input";
+        return "INPUT";
     case let_:
-        return "let";
+        return "LET";
     case if_:
-        return "if";
+        return "IF";
     case then_:
-        return "then";
+        return "THEN";
     case endif_:
-        return "endif";
+        return "ENDIF";
     case while_:
-        return "while";
+        return "WHILE";
     case repeat_:
-        return "repeat";
+        return "REPEAT";
     case endwhile_:
-        return "endwhile";
+        return "ENDWHILE";
     case eq_:
-        return "eq";
+        return "=";
     case plus_:
-        return "plus";
+        return "+";
     case minus_:
-        return "minus";
+        return "-";
     case mult_:
-        return "mult";
+        return "*";
     case div_:
-        return "div";
+        return "/";
     case eqeq_:
-        return "eqeq";
+        return "==";
     case noteq_:
-        return "noteq";
+        return "!=";
     case lt_:
-        return "lt";
+        return "<";
     case lteq_:
-        return "lteq";
+        return "<=";
     case gt_:
-        return "gt";
+        return ">";
     case gteq_:
-        return "gteq";
+        return ">=";
     default:
         return "unknown";
     }

@@ -19,6 +19,15 @@ void Parser::parse()
     {
         statement();
     }
+
+    // Check for any requested labels that were not declared
+    for (const auto &label : requested_labels)
+    {
+        if (!declared_labels.contains(label))
+        {
+            abort("Undefined label \"" + label + "\"");
+        }
+    }
 }
 
 void Parser::statement()
@@ -79,6 +88,15 @@ void Parser::statement()
         std::cout << "STATEMENT: LABEL\n";
 
         next_token();
+
+        // A LABEL can only be declared once
+        if (declared_labels.contains(current_token.value))
+        {
+            abort("Duplicate label \"" + current_token.value + "\"");
+        }
+
+        declared_labels.insert(current_token.value);
+
         match(TokenType::identifier_);
     }
     // Grammar: GOTO identifier
@@ -87,6 +105,10 @@ void Parser::statement()
         std::cout << "STATEMENT: GOTO\n";
 
         next_token();
+
+        // GOTO statements can reference labels before they are declared
+        requested_labels.insert(current_token.value);
+
         match(TokenType::identifier_);
     }
     // Grammar: INPUT identifier
@@ -95,6 +117,13 @@ void Parser::statement()
         std::cout << "STATEMENT: INPUT\n";
 
         next_token();
+
+        // INPUT statements implicitly (re)declare identifiers
+        if (!identifiers.contains(current_token.value))
+        {
+            identifiers.insert(current_token.value);
+        }
+
         match(TokenType::identifier_);
     }
     // Grammar: LET identifier = expression
@@ -103,13 +132,20 @@ void Parser::statement()
         std::cout << "STATEMENT: LET\n";
 
         next_token();
+
+        // Identifiers can be redeclared
+        if (!identifiers.contains(current_token.value))
+        {
+            identifiers.insert(current_token.value);
+        }
+
         match(TokenType::identifier_);
         match(TokenType::eq_);
         expression();
     }
     else
     {
-        abort("Invalid statement \"" + current_token.value + "\"");
+        abort("Invalid statement at \"" + current_token.value + "\"");
     }
 
     newline();
@@ -177,10 +213,20 @@ void Parser::unary()
 // Grammar: number | identifier
 void Parser::primary()
 {
-    std::cout << "PRIMARY: " << current_token.value << "\n";
-
-    if (check_token(TokenType::number_) || check_token(TokenType::identifier_))
+    if (check_token(TokenType::number_))
     {
+        std::cout << "PRIMARY: " << current_token.value << "\n";
+        next_token();
+    }
+    else if (check_token(TokenType::identifier_))
+    {
+        // Variables must be declared before use
+        if (!identifiers.contains(current_token.value))
+        {
+            abort("Variable referenced before assignment \"" + current_token.value + "\"");
+        }
+
+        std::cout << "PRIMARY: " << current_token.value << "\n";
         next_token();
     }
     else
@@ -205,8 +251,7 @@ void Parser::newline()
 
 void Parser::abort(std::string msg)
 {
-    std::cerr << "Parser error: " + msg
-              << "\nLn " << lexer.get_line_num() << "\n";
+    std::cerr << "Parser error: " + msg + "\n";
 
     std::exit(EXIT_FAILURE);
 }
@@ -228,7 +273,7 @@ void Parser::match(TokenType type)
     {
         Token expected;
         expected.type = type;
-        abort("Expected " + expected.type_as_string() + ", got " + current_token.type_as_string());
+        abort("Expected " + expected.type_as_string() + ", got \"" + current_token.value + "\"");
     }
     next_token();
 }

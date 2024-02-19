@@ -13,6 +13,7 @@ int main()
     if (!source_file.is_open())
     {
         std::cerr << "Failed to open source file.\n";
+
         return EXIT_FAILURE;
     }
 

@@ -8,7 +8,7 @@ TEST(TokenTest, TypeAsString)
     Token token;
 
     token.type = eof_;
-    EXPECT_EQ(token.type_as_string(), "eof");
+    EXPECT_EQ(token.type_as_string(), "EOF");
 
     token.type = newline_;
     EXPECT_EQ(token.type_as_string(), "newline");
@@ -23,70 +23,70 @@ TEST(TokenTest, TypeAsString)
     EXPECT_EQ(token.type_as_string(), "string");
 
     token.type = label_;
-    EXPECT_EQ(token.type_as_string(), "label");
+    EXPECT_EQ(token.type_as_string(), "LABEL");
 
     token.type = goto_;
-    EXPECT_EQ(token.type_as_string(), "goto");
+    EXPECT_EQ(token.type_as_string(), "GOTO");
 
     token.type = print_;
-    EXPECT_EQ(token.type_as_string(), "print");
+    EXPECT_EQ(token.type_as_string(), "PRINT");
 
     token.type = input_;
-    EXPECT_EQ(token.type_as_string(), "input");
+    EXPECT_EQ(token.type_as_string(), "INPUT");
 
     token.type = let_;
-    EXPECT_EQ(token.type_as_string(), "let");
+    EXPECT_EQ(token.type_as_string(), "LET");
 
     token.type = if_;
-    EXPECT_EQ(token.type_as_string(), "if");
+    EXPECT_EQ(token.type_as_string(), "IF");
 
     token.type = then_;
-    EXPECT_EQ(token.type_as_string(), "then");
+    EXPECT_EQ(token.type_as_string(), "THEN");
 
     token.type = endif_;
-    EXPECT_EQ(token.type_as_string(), "endif");
+    EXPECT_EQ(token.type_as_string(), "ENDIF");
 
     token.type = while_;
-    EXPECT_EQ(token.type_as_string(), "while");
+    EXPECT_EQ(token.type_as_string(), "WHILE");
 
     token.type = repeat_;
-    EXPECT_EQ(token.type_as_string(), "repeat");
+    EXPECT_EQ(token.type_as_string(), "REPEAT");
 
     token.type = endwhile_;
-    EXPECT_EQ(token.type_as_string(), "endwhile");
+    EXPECT_EQ(token.type_as_string(), "ENDWHILE");
 
     token.type = eq_;
-    EXPECT_EQ(token.type_as_string(), "eq");
+    EXPECT_EQ(token.type_as_string(), "=");
 
     token.type = plus_;
-    EXPECT_EQ(token.type_as_string(), "plus");
+    EXPECT_EQ(token.type_as_string(), "+");
 
     token.type = minus_;
-    EXPECT_EQ(token.type_as_string(), "minus");
+    EXPECT_EQ(token.type_as_string(), "-");
 
     token.type = mult_;
-    EXPECT_EQ(token.type_as_string(), "mult");
+    EXPECT_EQ(token.type_as_string(), "*");
 
     token.type = div_;
-    EXPECT_EQ(token.type_as_string(), "div");
+    EXPECT_EQ(token.type_as_string(), "/");
 
     token.type = eqeq_;
-    EXPECT_EQ(token.type_as_string(), "eqeq");
+    EXPECT_EQ(token.type_as_string(), "==");
 
     token.type = noteq_;
-    EXPECT_EQ(token.type_as_string(), "noteq");
+    EXPECT_EQ(token.type_as_string(), "!=");
 
     token.type = lt_;
-    EXPECT_EQ(token.type_as_string(), "lt");
+    EXPECT_EQ(token.type_as_string(), "<");
 
     token.type = lteq_;
-    EXPECT_EQ(token.type_as_string(), "lteq");
+    EXPECT_EQ(token.type_as_string(), "<=");
 
     token.type = gt_;
-    EXPECT_EQ(token.type_as_string(), "gt");
+    EXPECT_EQ(token.type_as_string(), ">");
 
     token.type = gteq_;
-    EXPECT_EQ(token.type_as_string(), "gteq");
+    EXPECT_EQ(token.type_as_string(), ">=");
 
     token.type = static_cast<TokenType>(-1);
     EXPECT_EQ(token.type_as_string(), "unknown");

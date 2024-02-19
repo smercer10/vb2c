@@ -86,6 +86,7 @@ Token Lexer::get_token()
         token.type = number_;
         break;
     }
+    // Identifiers can only start with a letter
     case 'A' ... 'Z':
     case 'a' ... 'z':
     {
@@ -100,8 +101,8 @@ Token Lexer::get_token()
             chars += curr_char;
         }
 
-        // Check if the token is a keyword
         // Using type_from_string directly would work right now, but this is more future-proof
+        // Check if the token is a keyword
         if (Token::is_keyword(Token::type_from_string(chars)))
         {
             token.type = Token::type_from_string(chars);
@@ -115,7 +116,6 @@ Token Lexer::get_token()
         }
         break;
     }
-
     case '+':
         token.value = curr_char;
         token.type = plus_;
@@ -191,11 +191,6 @@ Token Lexer::get_token()
     next_char();
 
     return token;
-}
-
-int Lexer::get_line_num()
-{
-    return line_num;
 }
 
 void Lexer::abort(std::string msg)

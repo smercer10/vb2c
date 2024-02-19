@@ -2,6 +2,7 @@
 #include "vb2c/lexer.h"
 #include "vb2c/token.h"
 #include <string>
+#include <unordered_set>
 
 class Parser
 {
@@ -25,6 +26,9 @@ private:
     Lexer &lexer;
     Token current_token;
     Token peek_token;
+    std::unordered_set<std::string> identifiers;
+    std::unordered_set<std::string> declared_labels;
+    std::unordered_set<std::string> requested_labels;
 
     void statement();
     void comparison();
