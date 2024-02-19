@@ -69,7 +69,7 @@ TokenType Token::type_from_string(std::string s)
 {
     using enum TokenType;
 
-    // Only care about keywords
+    // Only care about keywords for now
     if (s == "LABEL")
         return label_;
     if (s == "GOTO")
@@ -93,7 +93,7 @@ TokenType Token::type_from_string(std::string s)
     if (s == "ENDWHILE")
         return endwhile_;
 
-    return eof_;
+    return identifier_;
 }
 
 bool Token::is_keyword(TokenType type)

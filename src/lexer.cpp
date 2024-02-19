@@ -100,6 +100,7 @@ Token Lexer::get_token()
         }
 
         // Check if the token is a keyword
+        // Using type_from_string directly would work right now, but this is more future-proof
         if (Token::is_keyword(Token::type_from_string(chars)))
         {
             token.type = Token::type_from_string(chars);
