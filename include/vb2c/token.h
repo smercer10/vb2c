@@ -39,11 +39,12 @@ enum class TokenType
 class Token
 {
 public:
-    std::string value;
     TokenType type;
+    std::string value;
 
     std::string type_as_string(); // For debugging
 
     static TokenType type_from_string(std::string str);
     static bool is_keyword(TokenType type);
+    static bool is_comparison_operator(TokenType type);
 };

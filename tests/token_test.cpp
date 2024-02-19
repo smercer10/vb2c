@@ -128,6 +128,21 @@ TEST(TokenTest, IsKeyword)
     EXPECT_TRUE(Token::is_keyword(repeat_));
     EXPECT_TRUE(Token::is_keyword(endwhile_));
     EXPECT_FALSE(Token::is_keyword(identifier_));
-    EXPECT_FALSE(Token::is_keyword(identifier_));
+    EXPECT_FALSE(Token::is_keyword(mult_));
     EXPECT_FALSE(Token::is_keyword(static_cast<TokenType>(-1)));
+}
+
+TEST(TokenTest, IsComparisonOperator)
+{
+    using enum TokenType;
+
+    EXPECT_TRUE(Token::is_comparison_operator(eqeq_));
+    EXPECT_TRUE(Token::is_comparison_operator(noteq_));
+    EXPECT_TRUE(Token::is_comparison_operator(lt_));
+    EXPECT_TRUE(Token::is_comparison_operator(lteq_));
+    EXPECT_TRUE(Token::is_comparison_operator(gt_));
+    EXPECT_TRUE(Token::is_comparison_operator(gteq_));
+    EXPECT_FALSE(Token::is_comparison_operator(div_));
+    EXPECT_FALSE(Token::is_comparison_operator(label_));
+    EXPECT_FALSE(Token::is_comparison_operator(static_cast<TokenType>(-1)));
 }

@@ -118,3 +118,21 @@ bool Token::is_keyword(TokenType type)
         return false;
     }
 }
+
+bool Token::is_comparison_operator(TokenType type)
+{
+    using enum TokenType;
+
+    switch (type)
+    {
+    case eqeq_:
+    case noteq_:
+    case lt_:
+    case lteq_:
+    case gt_:
+    case gteq_:
+        return true;
+    default:
+        return false;
+    }
+}
