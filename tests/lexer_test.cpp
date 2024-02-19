@@ -1,4 +1,4 @@
-#include "tb2c/lexer.h"
+#include "vb2c/lexer.h"
 #include <gtest/gtest.h>
 
 TEST(LexerTest, Arithmetic)

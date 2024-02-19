@@ -1,3 +1,3 @@
-add_executable(tb2c tb2c.cpp)
+add_executable(vb2c vb2c.cpp)
 
-target_link_libraries(tb2c PRIVATE tb2c_lib)
+target_link_libraries(vb2c PRIVATE vb2c_lib)

@@ -1,5 +1,5 @@
+#include "vb2c/token.h"
 #include <gtest/gtest.h>
-#include <tb2c/token.h>
 
 TEST(TokenTest, TypeAsString)
 {

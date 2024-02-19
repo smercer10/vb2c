@@ -1,4 +1,4 @@
-#include "tb2c/token.h"
+#include "vb2c/token.h"
 
 std::string Token::type_as_string()
 {

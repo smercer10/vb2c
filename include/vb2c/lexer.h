@@ -1,5 +1,5 @@
 #pragma once
-#include "tb2c/token.h"
+#include "vb2c/token.h"
 #include <string>
 
 class Lexer

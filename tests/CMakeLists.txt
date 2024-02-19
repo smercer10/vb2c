@@ -6,10 +6,12 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(tb2c_test lexer_test.cpp token_test.cpp)
+add_executable(vb2c_test lexer_test.cpp token_test.cpp)
 
-target_link_libraries(tb2c_test tb2c_lib GTest::gtest_main)
+target_compile_features(vb2c_test PRIVATE cxx_std_20)
+
+target_link_libraries(vb2c_test vb2c_lib GTest::gtest_main)
 
 include(GoogleTest)
 
-gtest_discover_tests(tb2c_test)
+gtest_discover_tests(vb2c_test)
