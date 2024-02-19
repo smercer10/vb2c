@@ -192,6 +192,11 @@ Token Lexer::get_token()
     return token;
 }
 
+int Lexer::get_line_num()
+{
+    return line_num;
+}
+
 void Lexer::abort(std::string msg)
 {
     std::cerr << "Lexer error: " + msg

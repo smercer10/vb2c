@@ -16,6 +16,7 @@ public:
     }
 
     Token get_token();
+    int get_line_num();
 
 private:
     const std::string source;

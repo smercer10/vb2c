@@ -7,6 +7,8 @@ TEST(LexerTest, Arithmetic)
 
     Lexer lexer("18 +   2.9-3  *4578 /   5.0");
 
+    ASSERT_EQ(lexer.get_line_num(), 1);
+
     Token token{lexer.get_token()};
     ASSERT_EQ(token.type, number_);
     ASSERT_EQ(token.value, "18");
@@ -62,6 +64,8 @@ TEST(LexerTest, IfStatement)
                 "   GOTO   40\n"
                 "ENDIF  ");
 
+    ASSERT_EQ(lexer.get_line_num(), 1);
+
     Token token{lexer.get_token()};
     ASSERT_EQ(token.type, newline_);
     ASSERT_EQ(token.value, "\n");
@@ -69,6 +73,7 @@ TEST(LexerTest, IfStatement)
     token = lexer.get_token();
     ASSERT_EQ(token.type, if_);
     ASSERT_EQ(token.value, "IF");
+    ASSERT_EQ(lexer.get_line_num(), 2);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, identifier_);
@@ -93,6 +98,7 @@ TEST(LexerTest, IfStatement)
     token = lexer.get_token();
     ASSERT_EQ(token.type, print_);
     ASSERT_EQ(token.value, "PRINT");
+    ASSERT_EQ(lexer.get_line_num(), 3);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, string_);
@@ -105,6 +111,7 @@ TEST(LexerTest, IfStatement)
     token = lexer.get_token();
     ASSERT_EQ(token.type, goto_);
     ASSERT_EQ(token.value, "GOTO");
+    ASSERT_EQ(lexer.get_line_num(), 4);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, number_);
@@ -117,6 +124,7 @@ TEST(LexerTest, IfStatement)
     token = lexer.get_token();
     ASSERT_EQ(token.type, endif_);
     ASSERT_EQ(token.value, "ENDIF");
+    ASSERT_EQ(lexer.get_line_num(), 5);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, newline_);
@@ -137,6 +145,8 @@ TEST(LexerTest, WhileLoop)
                 "   LET i=   i +  1\n"
                 "  ENDWHILE");
 
+    ASSERT_EQ(lexer.get_line_num(), 1);
+
     Token token{lexer.get_token()};
     ASSERT_EQ(token.type, input_);
     ASSERT_EQ(token.value, "INPUT");
@@ -152,6 +162,7 @@ TEST(LexerTest, WhileLoop)
     token = lexer.get_token();
     ASSERT_EQ(token.type, while_);
     ASSERT_EQ(token.value, "WHILE");
+    ASSERT_EQ(lexer.get_line_num(), 2);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, identifier_);
@@ -172,6 +183,7 @@ TEST(LexerTest, WhileLoop)
     token = lexer.get_token();
     ASSERT_EQ(token.type, print_);
     ASSERT_EQ(token.value, "PRINT");
+    ASSERT_EQ(lexer.get_line_num(), 3);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, identifier_);
@@ -184,6 +196,7 @@ TEST(LexerTest, WhileLoop)
     token = lexer.get_token();
     ASSERT_EQ(token.type, let_);
     ASSERT_EQ(token.value, "LET");
+    ASSERT_EQ(lexer.get_line_num(), 4);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, identifier_);
@@ -208,6 +221,7 @@ TEST(LexerTest, WhileLoop)
     token = lexer.get_token();
     ASSERT_EQ(token.type, newline_);
     ASSERT_EQ(token.value, "\n");
+    ASSERT_EQ(lexer.get_line_num(), 5);
 
     token = lexer.get_token();
     ASSERT_EQ(token.type, endwhile_);
