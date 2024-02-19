@@ -1,19 +1,22 @@
 #include "vb2c/lexer.h"
+#include "vb2c/parser.h"
 #include "vb2c/token.h"
 #include <cstdlib>
 #include <iostream>
 
 int main()
 {
-    Lexer lexer("IF + -123 foo * THEN /");
+    std::string source = "LET foo = bar * 3 + 2"
+                         "IF foo > 0 THEN      "
+                         "  PRINT \"yes!\"     "
+                         "ENDIF                ";
 
-    Token token{lexer.get_token()};
+    Lexer lexer(source);
+    Parser parser(lexer);
 
-    while (token.type != TokenType::eof_)
-    {
-        std::cerr << token.type_as_string() << "\n";
-        token = lexer.get_token();
-    }
+    parser.parse();
+
+    std::cout << "Parsing complete.\n";
 
     return EXIT_SUCCESS;
 }

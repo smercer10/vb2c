@@ -1,4 +1,5 @@
 #include "vb2c/token.h"
+#include <string>
 
 std::string Token::type_as_string()
 {

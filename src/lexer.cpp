@@ -3,6 +3,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
 Token Lexer::get_token()
 {

@@ -1,4 +1,4 @@
-add_library(vb2c_lib lexer.cpp token.cpp)
+add_library(vb2c_lib lexer.cpp token.cpp parser.cpp)
 
 target_compile_features(vb2c_lib PUBLIC cxx_std_20)
 
