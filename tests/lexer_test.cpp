@@ -3,11 +3,11 @@
 
 TEST(LexerTest, Arithmetic)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     Lexer lexer("18 +   2.9-3  *4578 /   5.0");
 
-    Token token{lexer.get_token()};
+    Token::Token token{lexer.get_token()};
     ASSERT_EQ(token.type, number_);
     ASSERT_EQ(token.value, "18");
 
@@ -54,15 +54,15 @@ TEST(LexerTest, Arithmetic)
 
 TEST(LexerTest, IfStatement)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     Lexer lexer("#  Check if a is equal to b   \n"
-                " IF lemon==   GREEN_APPLE  THEN\n"
-                "   PRINT    \"lemon is equal to GREEN_APPLE\"\n"
-                "   GOTO   40\n"
-                "ENDIF  ");
+        " IF lemon==   GREEN_APPLE  THEN\n"
+        "   PRINT    \"lemon is equal to GREEN_APPLE\"\n"
+        "   GOTO   40\n"
+        "ENDIF  ");
 
-    Token token{lexer.get_token()};
+    Token::Token token{lexer.get_token()};
     ASSERT_EQ(token.type, newline_);
     ASSERT_EQ(token.value, "\n");
 
@@ -129,15 +129,15 @@ TEST(LexerTest, IfStatement)
 
 TEST(LexerTest, WhileLoop)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     Lexer lexer(" INPUT i  \n"
-                "WHILE  i   <10\n"
-                "   PRINT i  \n  "
-                "   LET i=   i +  1\n"
-                "  ENDWHILE");
+        "WHILE  i   <10\n"
+        "   PRINT i  \n  "
+        "   LET i=   i +  1\n"
+        "  ENDWHILE");
 
-    Token token{lexer.get_token()};
+    Token::Token token{lexer.get_token()};
     ASSERT_EQ(token.type, input_);
     ASSERT_EQ(token.value, "INPUT");
 

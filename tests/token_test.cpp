@@ -3,9 +3,9 @@
 
 TEST(TokenTest, TypeAsString)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
-    Token token;
+    Token::Token token;
 
     token.type = eof_;
     EXPECT_EQ(token.type_as_string(), "EOF");
@@ -88,13 +88,13 @@ TEST(TokenTest, TypeAsString)
     token.type = gteq_;
     EXPECT_EQ(token.type_as_string(), ">=");
 
-    token.type = static_cast<TokenType>(-1);
+    token.type = static_cast<Token::Type>(-1);
     EXPECT_EQ(token.type_as_string(), "unknown");
 }
 
 TEST(TokenTest, TypeFromString)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     EXPECT_EQ(Token::type_from_string("LABEL"), label_);
     EXPECT_EQ(Token::type_from_string("GOTO"), goto_);
@@ -114,7 +114,7 @@ TEST(TokenTest, TypeFromString)
 
 TEST(TokenTest, IsKeyword)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     EXPECT_TRUE(Token::is_keyword(label_));
     EXPECT_TRUE(Token::is_keyword(goto_));
@@ -129,12 +129,12 @@ TEST(TokenTest, IsKeyword)
     EXPECT_TRUE(Token::is_keyword(endwhile_));
     EXPECT_FALSE(Token::is_keyword(identifier_));
     EXPECT_FALSE(Token::is_keyword(mult_));
-    EXPECT_FALSE(Token::is_keyword(static_cast<TokenType>(-1)));
+    EXPECT_FALSE(Token::is_keyword(static_cast<Token::Type>(-1)));
 }
 
 TEST(TokenTest, IsComparisonOperator)
 {
-    using enum TokenType;
+    using enum Token::Type;
 
     EXPECT_TRUE(Token::is_comparison_operator(eqeq_));
     EXPECT_TRUE(Token::is_comparison_operator(noteq_));
@@ -144,5 +144,5 @@ TEST(TokenTest, IsComparisonOperator)
     EXPECT_TRUE(Token::is_comparison_operator(gteq_));
     EXPECT_FALSE(Token::is_comparison_operator(div_));
     EXPECT_FALSE(Token::is_comparison_operator(label_));
-    EXPECT_FALSE(Token::is_comparison_operator(static_cast<TokenType>(-1)));
+    EXPECT_FALSE(Token::is_comparison_operator(static_cast<Token::Type>(-1)));
 }

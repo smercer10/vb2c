@@ -5,7 +5,7 @@
 class Lexer
 {
 public:
-    Lexer(std::string source_code)
+    explicit Lexer(const std::string& source_code)
         : source{source_code + '\n'},
           curr_char{'\0'},
           curr_pos{-1},
@@ -15,7 +15,7 @@ public:
         next_char();
     }
 
-    Token get_token();
+    Token::Token get_token();
 
 private:
     const std::string source;
@@ -24,9 +24,9 @@ private:
     int line_num;
     int col_num;
 
-    void abort(std::string msg);
+    void abort(const std::string& msg) const;
     void next_char();
-    char peek();
+    [[nodiscard]] char peek() const;
     void skip_whitespace();
     void skip_comment();
 };

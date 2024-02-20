@@ -1,9 +1,9 @@
 #include "vb2c/token.h"
 #include <string>
 
-std::string Token::type_as_string()
+std::string Token::Token::type_as_string() const
 {
-    using enum TokenType;
+    using enum Type;
 
     switch (type)
     {
@@ -66,40 +66,40 @@ std::string Token::type_as_string()
     }
 }
 
-TokenType Token::type_from_string(std::string s)
+Token::Type Token::type_from_string(const std::string& str)
 {
-    using enum TokenType;
+    using enum Type;
 
-    // Only care about keywords for now
-    if (s == "LABEL")
+    // We only care about keywords for now
+    if (str == "LABEL")
         return label_;
-    if (s == "GOTO")
+    if (str == "GOTO")
         return goto_;
-    if (s == "PRINT")
+    if (str == "PRINT")
         return print_;
-    if (s == "INPUT")
+    if (str == "INPUT")
         return input_;
-    if (s == "LET")
+    if (str == "LET")
         return let_;
-    if (s == "IF")
+    if (str == "IF")
         return if_;
-    if (s == "THEN")
+    if (str == "THEN")
         return then_;
-    if (s == "ENDIF")
+    if (str == "ENDIF")
         return endif_;
-    if (s == "WHILE")
+    if (str == "WHILE")
         return while_;
-    if (s == "REPEAT")
+    if (str == "REPEAT")
         return repeat_;
-    if (s == "ENDWHILE")
+    if (str == "ENDWHILE")
         return endwhile_;
 
     return identifier_;
 }
 
-bool Token::is_keyword(TokenType type)
+bool Token::is_keyword(const Type type)
 {
-    using enum TokenType;
+    using enum Type;
 
     switch (type)
     {
@@ -120,9 +120,9 @@ bool Token::is_keyword(TokenType type)
     }
 }
 
-bool Token::is_comparison_operator(TokenType type)
+bool Token::is_comparison_operator(const Type type)
 {
-    using enum TokenType;
+    using enum Type;
 
     switch (type)
     {

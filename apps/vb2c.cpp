@@ -1,7 +1,5 @@
 #include "vb2c/lexer.h"
 #include "vb2c/parser.h"
-#include "vb2c/token.h"
-#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -14,7 +12,7 @@ int main()
     {
         std::cerr << "Failed to open source file.\n";
 
-        return EXIT_FAILURE;
+        return 1;
     }
 
     std::stringstream buffer;
@@ -28,5 +26,5 @@ int main()
 
     std::cout << "Parsing complete.\n";
 
-    return EXIT_SUCCESS;
+    return 0;
 }

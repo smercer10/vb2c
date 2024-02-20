@@ -7,11 +7,11 @@
 class Parser
 {
 public:
-    Parser(Lexer &lexer)
+    explicit Parser(Lexer& lexer)
         : lexer{lexer}
     {
-        Token init;
-        init.type = TokenType::eof_;
+        Token::Token init;
+        init.type = Token::Type::eof_;
         init.value = "";
 
         current_token = init;
@@ -23,9 +23,9 @@ public:
     void parse();
 
 private:
-    Lexer &lexer;
-    Token current_token;
-    Token peek_token;
+    Lexer& lexer;
+    Token::Token current_token;
+    Token::Token peek_token;
     std::unordered_set<std::string> identifiers;
     std::unordered_set<std::string> declared_labels;
     std::unordered_set<std::string> requested_labels;
@@ -37,9 +37,9 @@ private:
     void unary();
     void primary();
     void newline();
-    void abort(std::string msg);
-    bool check_token(TokenType type);
-    bool check_peek(TokenType type);
-    void match(TokenType type);
+    static void abort(const std::string& msg);
+    bool check_token(Token::Type type) const;
+    bool check_peek(Token::Type type) const;
+    void match(Token::Type type);
     void next_token();
 };

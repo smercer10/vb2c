@@ -9,19 +9,19 @@ void Parser::parse()
     std::cout << "PROGRAM\n";
 
     // Skip newlines before the first statement
-    while (check_token(TokenType::newline_))
+    while (check_token(Token::Type::newline_))
     {
         next_token();
     }
 
     // Parse all statements until the end of the file
-    while (!check_token(TokenType::eof_))
+    while (!check_token(Token::Type::eof_))
     {
         statement();
     }
 
     // Check for any requested labels that were not declared
-    for (const auto &label : requested_labels)
+    for (const auto& label : requested_labels)
     {
         if (!declared_labels.contains(label))
         {
@@ -30,16 +30,16 @@ void Parser::parse()
     }
 }
 
-void Parser::statement()
+void Parser::statement() // NOLINT
 {
     // Grammar: PRINT (string | expression)
-    if (check_token(TokenType::print_))
+    if (check_token(Token::Type::print_))
     {
         std::cout << "STATEMENT: PRINT\n";
 
         next_token();
 
-        if (check_token(TokenType::string_))
+        if (check_token(Token::Type::string_))
         {
             next_token();
         }
@@ -49,41 +49,41 @@ void Parser::statement()
         }
     }
     // Grammar: IF comparison THEN newline {statement} ENDIF
-    else if (check_token(TokenType::if_))
+    else if (check_token(Token::Type::if_))
     {
         std::cout << "STATEMENT: IF\n";
 
         next_token();
         comparison();
-        match(TokenType::then_);
+        match(Token::Type::then_);
         newline();
 
-        while (!check_token(TokenType::endif_))
+        while (!check_token(Token::Type::endif_))
         {
             statement();
         }
 
-        match(TokenType::endif_);
+        match(Token::Type::endif_);
     }
     // Grammar: WHILE comparison REPEAT newline {statement} ENDWHILE
-    else if (check_token(TokenType::while_))
+    else if (check_token(Token::Type::while_))
     {
         std::cout << "STATEMENT: WHILE\n";
 
         next_token();
         comparison();
-        match(TokenType::repeat_);
+        match(Token::Type::repeat_);
         newline();
 
-        while (!check_token(TokenType::endwhile_))
+        while (!check_token(Token::Type::endwhile_))
         {
             statement();
         }
 
-        match(TokenType::endwhile_);
+        match(Token::Type::endwhile_);
     }
     // Grammar: LABEL identifier
-    else if (check_token(TokenType::label_))
+    else if (check_token(Token::Type::label_))
     {
         std::cout << "STATEMENT: LABEL\n";
 
@@ -97,10 +97,10 @@ void Parser::statement()
 
         declared_labels.insert(current_token.value);
 
-        match(TokenType::identifier_);
+        match(Token::Type::identifier_);
     }
     // Grammar: GOTO identifier
-    else if (check_token(TokenType::goto_))
+    else if (check_token(Token::Type::goto_))
     {
         std::cout << "STATEMENT: GOTO\n";
 
@@ -109,10 +109,10 @@ void Parser::statement()
         // GOTO statements can reference labels before they are declared
         requested_labels.insert(current_token.value);
 
-        match(TokenType::identifier_);
+        match(Token::Type::identifier_);
     }
     // Grammar: INPUT identifier
-    else if (check_token(TokenType::input_))
+    else if (check_token(Token::Type::input_))
     {
         std::cout << "STATEMENT: INPUT\n";
 
@@ -124,10 +124,10 @@ void Parser::statement()
             identifiers.insert(current_token.value);
         }
 
-        match(TokenType::identifier_);
+        match(Token::Type::identifier_);
     }
     // Grammar: LET identifier = expression
-    else if (check_token(TokenType::let_))
+    else if (check_token(Token::Type::let_))
     {
         std::cout << "STATEMENT: LET\n";
 
@@ -139,8 +139,8 @@ void Parser::statement()
             identifiers.insert(current_token.value);
         }
 
-        match(TokenType::identifier_);
-        match(TokenType::eq_);
+        match(Token::Type::identifier_);
+        match(Token::Type::eq_);
         expression();
     }
     else
@@ -158,7 +158,7 @@ void Parser::comparison()
 
     expression();
 
-    if (Token::is_comparison_operator(current_token.type))
+    if (is_comparison_operator(current_token.type))
     {
         next_token();
         expression();
@@ -176,7 +176,7 @@ void Parser::expression()
 
     term();
 
-    while (check_token(TokenType::plus_) || check_token(TokenType::minus_))
+    while (check_token(Token::Type::plus_) || check_token(Token::Type::minus_))
     {
         next_token();
         term();
@@ -190,7 +190,7 @@ void Parser::term()
 
     unary();
 
-    while (check_token(TokenType::mult_) || check_token(TokenType::div_))
+    while (check_token(Token::Type::mult_) || check_token(Token::Type::div_))
     {
         next_token();
         unary();
@@ -202,7 +202,7 @@ void Parser::unary()
 {
     std::cout << "UNARY\n";
 
-    if (check_token(TokenType::plus_) || check_token(TokenType::minus_))
+    if (check_token(Token::Type::plus_) || check_token(Token::Type::minus_))
     {
         next_token();
     }
@@ -213,12 +213,12 @@ void Parser::unary()
 // Grammar: number | identifier
 void Parser::primary()
 {
-    if (check_token(TokenType::number_))
+    if (check_token(Token::Type::number_))
     {
         std::cout << "PRIMARY: " << current_token.value << "\n";
         next_token();
     }
-    else if (check_token(TokenType::identifier_))
+    else if (check_token(Token::Type::identifier_))
     {
         // Variables must be declared before use
         if (!identifiers.contains(current_token.value))
@@ -237,41 +237,40 @@ void Parser::primary()
 
 void Parser::newline()
 {
-    std ::cout << "NEWLINE\n";
+    std::cout << "NEWLINE\n";
 
     // Require at least one newline
-    match(TokenType::newline_);
+    match(Token::Type::newline_);
 
     // But extra newlines are allowed
-    while (check_token(TokenType::newline_))
+    while (check_token(Token::Type::newline_))
     {
         next_token();
     }
 }
 
-void Parser::abort(std::string msg)
+void Parser::abort(const std::string& msg)
 {
     std::cerr << "Parser error: " + msg + "\n";
 
     std::exit(EXIT_FAILURE);
 }
 
-bool Parser::check_token(TokenType type)
+bool Parser::check_token(const Token::Type type) const
 {
     return type == current_token.type;
 }
 
-bool Parser::check_peek(TokenType type)
+bool Parser::check_peek(const Token::Type type) const
 {
     return type == peek_token.type;
 }
 
-// Match current_token with the given type and advance to the next token
-void Parser::match(TokenType type)
+void Parser::match(const Token::Type type)
 {
     if (!check_token(type))
     {
-        Token expected;
+        Token::Token expected;
         expected.type = type;
         abort("Expected " + expected.type_as_string() + ", got \"" + current_token.value + "\"");
     }

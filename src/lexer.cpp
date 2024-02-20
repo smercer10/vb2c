@@ -1,32 +1,31 @@
 #include "vb2c/lexer.h"
 #include "vb2c/token.h"
 #include <cctype>
-#include <cstdlib>
 #include <iostream>
 #include <string>
 
-Token Lexer::get_token()
+Token::Token Lexer::get_token()
 {
     skip_whitespace();
     skip_comment();
 
-    Token token;
+    Token::Token token;
 
-    using enum TokenType;
+    using enum Token::Type;
 
-    switch (curr_char)
+    if (curr_char == '\0')
     {
-    case '\0':
         token.value = curr_char;
         token.type = eof_;
-        break;
-    case '\n':
+    }
+    else if (curr_char == '\n')
+    {
         token.value = curr_char;
         token.type = newline_;
         ++line_num;
         col_num = 1;
-        break;
-    case '"':
+    }
+    else if (curr_char == '"')
     {
         std::string chars;
         std::string illegal_chars{"\r\n\t\\%"};
@@ -35,7 +34,7 @@ Token Lexer::get_token()
         next_char();
         while (curr_char != '"')
         {
-            // Avoid issues with string formatting in emitted C code
+            // Prevents issues with string formatting in emitted C code
             if (illegal_chars.find(curr_char) != std::string::npos)
             {
                 abort("Illegal character in string");
@@ -47,9 +46,8 @@ Token Lexer::get_token()
 
         token.value = chars;
         token.type = string_;
-        break;
     }
-    case '0' ... '9':
+    else if (std::isdigit(curr_char))
     {
         std::string chars;
 
@@ -84,11 +82,9 @@ Token Lexer::get_token()
 
         token.value = chars;
         token.type = number_;
-        break;
     }
-    // Identifiers can only start with a letter
-    case 'A' ... 'Z':
-    case 'a' ... 'z':
+    // Identifiers can start with a letter or underscore
+    else if (std::isalpha(curr_char) || curr_char == '_')
     {
         std::string chars;
 
@@ -102,37 +98,39 @@ Token Lexer::get_token()
         }
 
         // Using type_from_string directly would work right now, but this is more future-proof
-        // Check if the token is a keyword
         if (Token::is_keyword(Token::type_from_string(chars)))
         {
             token.type = Token::type_from_string(chars);
             token.value = chars;
         }
-        // Otherwise, it's an identifier
         else
         {
             token.type = identifier_;
             token.value = chars;
         }
-        break;
     }
-    case '+':
+    else if (curr_char == '+')
+    {
         token.value = curr_char;
         token.type = plus_;
-        break;
-    case '-':
+    }
+    else if (curr_char == '-')
+    {
         token.value = curr_char;
         token.type = minus_;
-        break;
-    case '*':
+    }
+    else if (curr_char == '*')
+    {
         token.value = curr_char;
         token.type = mult_;
-        break;
-    case '/':
+    }
+    else if (curr_char == '/')
+    {
         token.value = curr_char;
         token.type = div_;
-        break;
-    case '=':
+    }
+    else if (curr_char == '=')
+    {
         if (peek() == '=')
         {
             token.value = "==";
@@ -144,8 +142,9 @@ Token Lexer::get_token()
             token.value = curr_char;
             token.type = eq_;
         }
-        break;
-    case '!':
+    }
+    else if (curr_char == '!')
+    {
         if (peek() == '=')
         {
             token.value = "!=";
@@ -154,10 +153,11 @@ Token Lexer::get_token()
         }
         else
         {
-            abort("Expected \"!=\", got \"!" + std::string(1, peek()) + "\"");
+            abort(R"(Expected "!=", got "!)" + std::string(1, peek()) + "\"");
         }
-        break;
-    case '<':
+    }
+    else if (curr_char == '<')
+    {
         if (peek() == '=')
         {
             token.value = "<=";
@@ -169,8 +169,9 @@ Token Lexer::get_token()
             token.value = curr_char;
             token.type = lt_;
         }
-        break;
-    case '>':
+    }
+    else if (curr_char == '>')
+    {
         if (peek() == '=')
         {
             token.value = ">=";
@@ -182,8 +183,9 @@ Token Lexer::get_token()
             token.value = curr_char;
             token.type = gt_;
         }
-        break;
-    default:
+    }
+    else
+    {
         abort("Unknown token \"" + std::string(1, curr_char) + "\"");
         next_char();
     }
@@ -193,12 +195,12 @@ Token Lexer::get_token()
     return token;
 }
 
-void Lexer::abort(std::string msg)
+void Lexer::abort(const std::string& msg) const
 {
     std::cerr << "Lexer error: " + msg
-              << "\nLn " << line_num << ", Col " << col_num - 1 << "\n";
+        << "\nLn " << line_num << ", Col " << col_num - 1 << "\n";
 
-    std::exit(EXIT_FAILURE);
+    std::exit(1);
 }
 
 void Lexer::next_char()
@@ -208,7 +210,7 @@ void Lexer::next_char()
     curr_char = (curr_pos >= source.length()) ? '\0' : source[curr_pos];
 }
 
-char Lexer::peek()
+char Lexer::peek() const
 {
     return (curr_pos + 1 >= source.length()) ? '\0' : source[curr_pos + 1];
 }
