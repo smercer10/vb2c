@@ -1,53 +1,53 @@
 #pragma once
 #include <string>
 
-namespace Token
+namespace token
 {
-    // Enumerators are suffixed with an underscore to avoid conflicts with C++ keywords
-    enum class Type
+    // A tkn prefix is used to avoid conflict with C++ keywords
+    enum class tkn_type
     {
         // Special tokens
-        eof_,
-        newline_,
-        number_,
-        identifier_,
-        string_,
+        tkn_eof,
+        tkn_newline,
+        tkn_number,
+        tkn_identifier,
+        tkn_string,
         // Keywords
-        label_,
-        goto_,
-        print_,
-        input_,
-        let_,
-        if_,
-        then_,
-        endif_,
-        while_,
-        repeat_,
-        endwhile_,
+        tkn_label,
+        tkn_goto,
+        tkn_print,
+        tkn_input,
+        tkn_let,
+        tkn_if,
+        tkn_then,
+        tkn_endif,
+        tkn_while,
+        tkn_repeat,
+        tkn_endwhile,
         // Operators
-        eq_,
-        plus_,
-        minus_,
-        mult_,
-        div_,
-        eqeq_,
-        noteq_,
-        lt_,
-        lteq_,
-        gt_,
-        gteq_,
+        tkn_eq,
+        tkn_plus,
+        tkn_minus,
+        tkn_mult,
+        tkn_div,
+        tkn_eqeq,
+        tkn_noteq,
+        tkn_lt,
+        tkn_lteq,
+        tkn_gt,
+        tkn_gteq,
     };
 
-    class Token
+    class token
     {
     public:
-        Type type;
+        tkn_type type;
         std::string value;
 
         [[nodiscard]] std::string type_as_string() const;
     };
 
-    Type type_from_string(const std::string& str);
-    bool is_keyword(Type type);
-    bool is_comparison_operator(Type type);
+    tkn_type type_from_string(const std::string& str);
+    bool is_keyword(tkn_type type);
+    bool is_comparison_op(tkn_type type);
 }

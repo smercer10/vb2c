@@ -4,205 +4,229 @@
 #include <iostream>
 #include <string>
 
-void Parser::parse()
+void parser::program()
 {
     std::cout << "PROGRAM\n";
 
     // Skip newlines before the first statement
-    while (check_token(Token::Type::newline_))
+    while (check_current_token(token::tkn_type::tkn_newline))
     {
         next_token();
     }
 
     // Parse all statements until the end of the file
-    while (!check_token(Token::Type::eof_))
+    while (!check_current_token(token::tkn_type::tkn_eof))
     {
         statement();
     }
 
     // Check for any requested labels that were not declared
-    for (const auto& label : requested_labels)
+    for (const auto& label : requested_labels_)
     {
-        if (!declared_labels.contains(label))
+        if (!declared_labels_.contains(label))
         {
             abort("Undefined label \"" + label + "\"");
         }
     }
 }
 
-void Parser::statement() // NOLINT
+void parser::statement() // NOLINT
 {
-    // Grammar: PRINT (string | expression)
-    if (check_token(Token::Type::print_))
+    if (check_current_token(token::tkn_type::tkn_print))
     {
         std::cout << "STATEMENT: PRINT\n";
 
-        next_token();
-
-        if (check_token(Token::Type::string_))
-        {
-            next_token();
-        }
-        else
-        {
-            expression();
-        }
+        print_statement();
     }
-    // Grammar: IF comparison THEN newline {statement} ENDIF
-    else if (check_token(Token::Type::if_))
+    else if (check_current_token(token::tkn_type::tkn_if))
     {
         std::cout << "STATEMENT: IF\n";
 
-        next_token();
-        comparison();
-        match(Token::Type::then_);
-        newline();
-
-        while (!check_token(Token::Type::endif_))
-        {
-            statement();
-        }
-
-        match(Token::Type::endif_);
+        if_statement();
     }
-    // Grammar: WHILE comparison REPEAT newline {statement} ENDWHILE
-    else if (check_token(Token::Type::while_))
+    else if (check_current_token(token::tkn_type::tkn_while))
     {
         std::cout << "STATEMENT: WHILE\n";
 
-        next_token();
-        comparison();
-        match(Token::Type::repeat_);
-        newline();
-
-        while (!check_token(Token::Type::endwhile_))
-        {
-            statement();
-        }
-
-        match(Token::Type::endwhile_);
+        while_statement();
     }
-    // Grammar: LABEL identifier
-    else if (check_token(Token::Type::label_))
+    else if (check_current_token(token::tkn_type::tkn_label))
     {
         std::cout << "STATEMENT: LABEL\n";
 
-        next_token();
-
-        // A LABEL can only be declared once
-        if (declared_labels.contains(current_token.value))
-        {
-            abort("Duplicate label \"" + current_token.value + "\"");
-        }
-
-        declared_labels.insert(current_token.value);
-
-        match(Token::Type::identifier_);
+        label_statement();
     }
-    // Grammar: GOTO identifier
-    else if (check_token(Token::Type::goto_))
+    else if (check_current_token(token::tkn_type::tkn_goto))
     {
         std::cout << "STATEMENT: GOTO\n";
 
-        next_token();
-
-        // GOTO statements can reference labels before they are declared
-        requested_labels.insert(current_token.value);
-
-        match(Token::Type::identifier_);
+        goto_statement();
     }
-    // Grammar: INPUT identifier
-    else if (check_token(Token::Type::input_))
+    else if (check_current_token(token::tkn_type::tkn_input))
     {
         std::cout << "STATEMENT: INPUT\n";
 
-        next_token();
-
-        // INPUT statements implicitly (re)declare identifiers
-        if (!identifiers.contains(current_token.value))
-        {
-            identifiers.insert(current_token.value);
-        }
-
-        match(Token::Type::identifier_);
+        input_statement();
     }
-    // Grammar: LET identifier = expression
-    else if (check_token(Token::Type::let_))
+    else if (check_current_token(token::tkn_type::tkn_let))
     {
         std::cout << "STATEMENT: LET\n";
 
-        next_token();
-
-        // Identifiers can be redeclared
-        if (!identifiers.contains(current_token.value))
-        {
-            identifiers.insert(current_token.value);
-        }
-
-        match(Token::Type::identifier_);
-        match(Token::Type::eq_);
-        expression();
+        let_statement();
     }
     else
     {
-        abort("Invalid statement at \"" + current_token.value + "\"");
+        abort("Invalid statement at \"" + current_token_.value + "\"");
     }
 
     newline();
 }
 
-// Grammar: expression (== | != | < | <= | > | >=) expression
-void Parser::comparison()
+void parser::print_statement()
+{
+    next_token();
+
+    if (check_current_token(token::tkn_type::tkn_string))
+    {
+        next_token();
+    }
+    else
+    {
+        expression();
+    }
+}
+
+void parser::if_statement() // NOLINT
+{
+    next_token();
+    comparison();
+    match_current_token(token::tkn_type::tkn_then);
+    newline();
+
+    while (!check_current_token(token::tkn_type::tkn_endif))
+    {
+        statement();
+    }
+
+    match_current_token(token::tkn_type::tkn_endif);
+}
+
+void parser::while_statement() // NOLINT
+{
+    next_token();
+    comparison();
+    match_current_token(token::tkn_type::tkn_repeat);
+    newline();
+
+    while (!check_current_token(token::tkn_type::tkn_endwhile))
+    {
+        statement();
+    }
+
+    match_current_token(token::tkn_type::tkn_endwhile);
+}
+
+void parser::label_statement()
+{
+    next_token();
+
+    // Labels can only be declared once
+    if (declared_labels_.contains(current_token_.value))
+    {
+        abort("Duplicate label \"" + current_token_.value + "\"");
+    }
+
+    declared_labels_.insert(current_token_.value);
+
+    match_current_token(token::tkn_type::tkn_identifier);
+}
+
+void parser::goto_statement()
+{
+    next_token();
+
+    // Goto statements can reference labels before they are declared
+    requested_labels_.insert(current_token_.value);
+
+    match_current_token(token::tkn_type::tkn_identifier);
+}
+
+void parser::input_statement()
+{
+    next_token();
+
+    // Input statements implicitly (re)declare identifiers
+    if (!declared_identifiers_.contains(current_token_.value))
+    {
+        declared_identifiers_.insert(current_token_.value);
+    }
+
+    match_current_token(token::tkn_type::tkn_identifier);
+}
+
+void parser::let_statement()
+{
+    next_token();
+
+    // Identifiers can be redeclared
+    if (!declared_identifiers_.contains(current_token_.value))
+    {
+        declared_identifiers_.insert(current_token_.value);
+    }
+
+    match_current_token(token::tkn_type::tkn_identifier);
+    match_current_token(token::tkn_type::tkn_eq);
+    expression();
+}
+
+void parser::comparison()
 {
     std::cout << "COMPARISON\n";
 
     expression();
 
-    if (is_comparison_operator(current_token.type))
+    if (is_comparison_op(current_token_.type))
     {
         next_token();
         expression();
     }
     else
     {
-        abort("Expected comparison operator, got \"" + current_token.value + "\"");
+        abort("Expected comparison operator, got \"" + current_token_.value + "\"");
     }
 }
 
-// Grammar: expression {(+ | -) expression}
-void Parser::expression()
+void parser::expression()
 {
     std::cout << "EXPRESSION\n";
 
     term();
 
-    while (check_token(Token::Type::plus_) || check_token(Token::Type::minus_))
+    while (check_current_token(token::tkn_type::tkn_plus) || check_current_token(token::tkn_type::tkn_minus))
     {
         next_token();
         term();
     }
 }
 
-// Grammar: unary {(* | /) unary}
-void Parser::term()
+void parser::term()
 {
     std::cout << "TERM\n";
 
     unary();
 
-    while (check_token(Token::Type::mult_) || check_token(Token::Type::div_))
+    while (check_current_token(token::tkn_type::tkn_mult) || check_current_token(token::tkn_type::tkn_div))
     {
         next_token();
         unary();
     }
 }
 
-// Grammar: [+ | -] primary
-void Parser::unary()
+void parser::unary()
 {
     std::cout << "UNARY\n";
 
-    if (check_token(Token::Type::plus_) || check_token(Token::Type::minus_))
+    if (check_current_token(token::tkn_type::tkn_plus) || check_current_token(token::tkn_type::tkn_minus))
     {
         next_token();
     }
@@ -210,75 +234,74 @@ void Parser::unary()
     primary();
 }
 
-// Grammar: number | identifier
-void Parser::primary()
+void parser::primary()
 {
-    if (check_token(Token::Type::number_))
+    if (check_current_token(token::tkn_type::tkn_number))
     {
-        std::cout << "PRIMARY: " << current_token.value << "\n";
+        std::cout << "PRIMARY: " << current_token_.value << "\n";
         next_token();
     }
-    else if (check_token(Token::Type::identifier_))
+    else if (check_current_token(token::tkn_type::tkn_identifier))
     {
         // Variables must be declared before use
-        if (!identifiers.contains(current_token.value))
+        if (!declared_identifiers_.contains(current_token_.value))
         {
-            abort("Variable referenced before assignment \"" + current_token.value + "\"");
+            abort("Variable referenced before assignment \"" + current_token_.value + "\"");
         }
 
-        std::cout << "PRIMARY: " << current_token.value << "\n";
+        std::cout << "PRIMARY: " << current_token_.value << "\n";
         next_token();
     }
     else
     {
-        abort("Unexpected token \"" + current_token.value + "\"");
+        abort("Unexpected token \"" + current_token_.value + "\"");
     }
 }
 
-void Parser::newline()
+void parser::newline()
 {
     std::cout << "NEWLINE\n";
 
     // Require at least one newline
-    match(Token::Type::newline_);
+    match_current_token(token::tkn_type::tkn_newline);
 
     // But extra newlines are allowed
-    while (check_token(Token::Type::newline_))
+    while (check_current_token(token::tkn_type::tkn_newline))
     {
         next_token();
     }
 }
 
-void Parser::abort(const std::string& msg)
+void parser::abort(const std::string& msg)
 {
     std::cerr << "Parser error: " + msg + "\n";
 
     std::exit(EXIT_FAILURE);
 }
 
-bool Parser::check_token(const Token::Type type) const
+void parser::match_current_token(const token::tkn_type type)
 {
-    return type == current_token.type;
-}
-
-bool Parser::check_peek(const Token::Type type) const
-{
-    return type == peek_token.type;
-}
-
-void Parser::match(const Token::Type type)
-{
-    if (!check_token(type))
+    if (!check_current_token(type))
     {
-        Token::Token expected;
+        token::token expected;
         expected.type = type;
-        abort("Expected " + expected.type_as_string() + ", got \"" + current_token.value + "\"");
+        abort("Expected " + expected.type_as_string() + ", got \"" + current_token_.value + "\"");
     }
     next_token();
 }
 
-void Parser::next_token()
+bool parser::check_current_token(const token::tkn_type type) const
 {
-    current_token = peek_token;
-    peek_token = lexer.get_token();
+    return type == current_token_.type;
+}
+
+bool parser::check_peek_token(const token::tkn_type type) const
+{
+    return type == peek_token_.type;
+}
+
+void parser::next_token()
+{
+    current_token_ = peek_token_;
+    peek_token_ = lexer_.get_token();
 }

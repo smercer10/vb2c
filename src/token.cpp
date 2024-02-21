@@ -1,137 +1,137 @@
 #include "vb2c/token.h"
 #include <string>
 
-std::string Token::Token::type_as_string() const
+std::string token::token::type_as_string() const
 {
-    using enum Type;
+    using enum tkn_type;
 
     switch (type)
     {
-    case eof_:
+    case tkn_eof:
         return "EOF";
-    case newline_:
+    case tkn_newline:
         return "newline";
-    case number_:
+    case tkn_number:
         return "number";
-    case identifier_:
+    case tkn_identifier:
         return "identifier";
-    case string_:
+    case tkn_string:
         return "string";
-    case label_:
+    case tkn_label:
         return "LABEL";
-    case goto_:
+    case tkn_goto:
         return "GOTO";
-    case print_:
+    case tkn_print:
         return "PRINT";
-    case input_:
+    case tkn_input:
         return "INPUT";
-    case let_:
+    case tkn_let:
         return "LET";
-    case if_:
+    case tkn_if:
         return "IF";
-    case then_:
+    case tkn_then:
         return "THEN";
-    case endif_:
+    case tkn_endif:
         return "ENDIF";
-    case while_:
+    case tkn_while:
         return "WHILE";
-    case repeat_:
+    case tkn_repeat:
         return "REPEAT";
-    case endwhile_:
+    case tkn_endwhile:
         return "ENDWHILE";
-    case eq_:
+    case tkn_eq:
         return "=";
-    case plus_:
+    case tkn_plus:
         return "+";
-    case minus_:
+    case tkn_minus:
         return "-";
-    case mult_:
+    case tkn_mult:
         return "*";
-    case div_:
+    case tkn_div:
         return "/";
-    case eqeq_:
+    case tkn_eqeq:
         return "==";
-    case noteq_:
+    case tkn_noteq:
         return "!=";
-    case lt_:
+    case tkn_lt:
         return "<";
-    case lteq_:
+    case tkn_lteq:
         return "<=";
-    case gt_:
+    case tkn_gt:
         return ">";
-    case gteq_:
+    case tkn_gteq:
         return ">=";
     default:
         return "unknown";
     }
 }
 
-Token::Type Token::type_from_string(const std::string& str)
+token::tkn_type token::type_from_string(const std::string& str)
 {
-    using enum Type;
+    using enum tkn_type;
 
     // We only care about keywords for now
     if (str == "LABEL")
-        return label_;
+        return tkn_label;
     if (str == "GOTO")
-        return goto_;
+        return tkn_goto;
     if (str == "PRINT")
-        return print_;
+        return tkn_print;
     if (str == "INPUT")
-        return input_;
+        return tkn_input;
     if (str == "LET")
-        return let_;
+        return tkn_let;
     if (str == "IF")
-        return if_;
+        return tkn_if;
     if (str == "THEN")
-        return then_;
+        return tkn_then;
     if (str == "ENDIF")
-        return endif_;
+        return tkn_endif;
     if (str == "WHILE")
-        return while_;
+        return tkn_while;
     if (str == "REPEAT")
-        return repeat_;
+        return tkn_repeat;
     if (str == "ENDWHILE")
-        return endwhile_;
+        return tkn_endwhile;
 
-    return identifier_;
+    return tkn_identifier;
 }
 
-bool Token::is_keyword(const Type type)
+bool token::is_keyword(const tkn_type type)
 {
-    using enum Type;
+    using enum tkn_type;
 
     switch (type)
     {
-    case label_:
-    case goto_:
-    case print_:
-    case input_:
-    case let_:
-    case if_:
-    case then_:
-    case endif_:
-    case while_:
-    case repeat_:
-    case endwhile_:
+    case tkn_label:
+    case tkn_goto:
+    case tkn_print:
+    case tkn_input:
+    case tkn_let:
+    case tkn_if:
+    case tkn_then:
+    case tkn_endif:
+    case tkn_while:
+    case tkn_repeat:
+    case tkn_endwhile:
         return true;
     default:
         return false;
     }
 }
 
-bool Token::is_comparison_operator(const Type type)
+bool token::is_comparison_op(const tkn_type type)
 {
-    using enum Type;
+    using enum tkn_type;
 
     switch (type)
     {
-    case eqeq_:
-    case noteq_:
-    case lt_:
-    case lteq_:
-    case gt_:
-    case gteq_:
+    case tkn_eqeq:
+    case tkn_noteq:
+    case tkn_lt:
+    case tkn_lteq:
+    case tkn_gt:
+    case tkn_gteq:
         return true;
     default:
         return false;

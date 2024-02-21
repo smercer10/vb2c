@@ -2,28 +2,32 @@
 #include "vb2c/token.h"
 #include <string>
 
-class Lexer
+class lexer
 {
 public:
-    explicit Lexer(const std::string& source_code)
-        : source{source_code + '\n'},
-          curr_char{'\0'},
-          curr_pos{-1},
-          line_num{1},
-          col_num{1}
+    explicit lexer(const std::string& source_code)
+        : source_{source_code + '\n'},
+          curr_char_{'\0'},
+          curr_pos_{-1},
+          line_num_{1},
+          col_num_{1}
     {
         next_char();
     }
 
-    Token::Token get_token();
+    // Returns the next valid token from the current position in the source
+    token::token get_token();
 
 private:
-    const std::string source;
-    char curr_char;
-    int curr_pos;
-    int line_num;
-    int col_num;
+    const std::string source_;
+    char curr_char_;
+    int curr_pos_;
+    int line_num_;
+    int col_num_;
 
+    void process_string(token::token& token);
+    void process_number(token::token& token);
+    void process_identifier(token::token& token);
     void abort(const std::string& msg) const;
     void next_char();
     [[nodiscard]] char peek() const;

@@ -4,42 +4,82 @@
 #include <string>
 #include <unordered_set>
 
-class Parser
+class parser
 {
 public:
-    explicit Parser(Lexer& lexer)
-        : lexer{lexer}
+    explicit parser(lexer& lexer)
+        : lexer_{lexer}
     {
-        Token::Token init;
-        init.type = Token::Type::eof_;
+        token::token init;
+        init.type = token::tkn_type::tkn_eof;
         init.value = "";
 
-        current_token = init;
-        peek_token = init;
+        current_token_ = init;
+        peek_token_ = init;
         next_token();
         next_token();
     }
 
-    void parse();
+    // Grammar: {statement}
+    void program();
 
 private:
-    Lexer& lexer;
-    Token::Token current_token;
-    Token::Token peek_token;
-    std::unordered_set<std::string> identifiers;
-    std::unordered_set<std::string> declared_labels;
-    std::unordered_set<std::string> requested_labels;
+    lexer& lexer_;
+    token::token current_token_;
+    token::token peek_token_;
+    std::unordered_set<std::string> declared_identifiers_;
+    std::unordered_set<std::string> declared_labels_;
+    std::unordered_set<std::string> requested_labels_;
 
+    // Grammar: print_statement | if_statement | while_statement | label_statement |
+    //          goto_statement | input_statement | let_statement
     void statement();
+
+    // Grammar: PRINT (string | expression)
+    void print_statement();
+
+    // Grammar: IF comparison THEN newline {statement} ENDIF
+    void if_statement();
+
+    // Grammar: WHILE comparison REPEAT newline {statement} ENDWHILE
+    void while_statement();
+
+    // Grammar: LABEL identifier
+    void label_statement();
+
+    // Grammar: GOTO identifier
+    void goto_statement();
+
+    // Grammar: INPUT identifier
+    void input_statement();
+
+    // Grammar: LET identifier = expression
+    void let_statement();
+
+    // Grammar: expression (== | != | < | <= | > | >=) expression
     void comparison();
+
+    // Grammar: expression {(+ | -) expression}
     void expression();
+
+    // Grammar: unary {(* | /) unary}
     void term();
+
+    // Grammar: [+ | -] primary
     void unary();
+
+    // Grammar: number | identifier
     void primary();
+
+    // Grammar: {newline}
     void newline();
+
     static void abort(const std::string& msg);
-    bool check_token(Token::Type type) const;
-    bool check_peek(Token::Type type) const;
-    void match(Token::Type type);
+
+    // Aborts if it doesn't match
+    void match_current_token(token::tkn_type type);
+
+    bool check_current_token(token::tkn_type type) const;
+    bool check_peek_token(token::tkn_type type) const;
     void next_token();
 };

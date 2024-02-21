@@ -19,10 +19,10 @@ int main()
     buffer << source_file.rdbuf();
     std::string source = buffer.str();
 
-    Lexer lexer(source);
-    Parser parser(lexer);
+    lexer lexer(source);
+    parser parser(lexer);
 
-    parser.parse();
+    parser.program();
 
     std::cout << "Parsing complete.\n";
 
