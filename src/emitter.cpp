@@ -3,7 +3,7 @@
 
 void emitter::write_file() const
 {
-    std::ofstream file(filepath_);
+    std::ofstream file(output_path_);
 
     if (!file.is_open())
     {

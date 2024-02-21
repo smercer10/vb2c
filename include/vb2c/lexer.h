@@ -5,8 +5,8 @@
 class lexer
 {
 public:
-    explicit lexer(const std::string& source_code)
-        : source_{source_code + '\n'},
+    explicit lexer(const std::string& source)
+        : source_{source + '\n'},
           curr_char_{'\0'},
           curr_pos_{-1},
           line_num_{1},

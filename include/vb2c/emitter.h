@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
+#include <utility>
 
 class emitter
 {
 public:
-    explicit emitter(const std::string& filename)
-        : filepath_{filename + ".c"}
+    explicit emitter(std::string output_path)
+        : output_path_{std::move(output_path)}
     {
     }
 
@@ -16,7 +17,7 @@ public:
     void header_prepend(const std::string& code); // For adding conditional includes
 
 private:
-    const std::string filepath_; // The file to write to
+    const std::string output_path_;
     std::string code_;
     std::string header_; // Anything that needs to be added to the top of the file
 };
