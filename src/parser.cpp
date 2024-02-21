@@ -7,7 +7,7 @@
 
 void parser::program()
 {
-    emitter_.emit_header_line("#include <cstdlib>");
+    emitter_.emit_header_line("#include <stdlib.h>");
     emitter_.emit_header_line("int main(void){");
 
     // Skip newlines before the first statement
@@ -94,9 +94,9 @@ void parser::print_statement()
     }
     else
     {
-        emitter_.emit(std::string("printf(\"%") + ".2f\\n\",float(");
+        emitter_.emit(std::string("printf(\"%") + ".2f\\n\",");
         expression();
-        emitter_.emit_line("));");
+        emitter_.emit_line(");");
     }
 }
 
