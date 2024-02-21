@@ -1,12 +1,14 @@
+// ReSharper disable CppDFAEndlessLoop
+// ReSharper disable CppDFAUnreachableCode
 #include "vb2c/parser.h"
 #include "vb2c/token.h"
-#include <cstdlib>
 #include <iostream>
 #include <string>
 
 void parser::program()
 {
-    std::cout << "PROGRAM\n";
+    emitter_.emit_header_line("#include <cstdlib>");
+    emitter_.emit_header_line("int main(void){");
 
     // Skip newlines before the first statement
     while (check_current_token(token::tkn_type::tkn_newline))
@@ -19,6 +21,15 @@ void parser::program()
     {
         statement();
     }
+
+    // We only need to include stdio.h if we have print or input statements
+    if (has_print_statement_ || has_input_statement_)
+    {
+        emitter_.header_prepend("#include <stdio.h>");
+    }
+
+    emitter_.emit_line("return EXIT_SUCCESS;");
+    emitter_.emit_line("}");
 
     // Check for any requested labels that were not declared
     for (const auto& label : requested_labels_)
@@ -34,44 +45,34 @@ void parser::statement() // NOLINT
 {
     if (check_current_token(token::tkn_type::tkn_print))
     {
-        std::cout << "STATEMENT: PRINT\n";
+        has_print_statement_ = true;
 
         print_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_if))
     {
-        std::cout << "STATEMENT: IF\n";
-
         if_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_while))
     {
-        std::cout << "STATEMENT: WHILE\n";
-
         while_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_label))
     {
-        std::cout << "STATEMENT: LABEL\n";
-
         label_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_goto))
     {
-        std::cout << "STATEMENT: GOTO\n";
-
         goto_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_input))
     {
-        std::cout << "STATEMENT: INPUT\n";
+        has_input_statement_ = true;
 
         input_statement();
     }
     else if (check_current_token(token::tkn_type::tkn_let))
     {
-        std::cout << "STATEMENT: LET\n";
-
         let_statement();
     }
     else
@@ -88,20 +89,27 @@ void parser::print_statement()
 
     if (check_current_token(token::tkn_type::tkn_string))
     {
+        emitter_.emit_line("printf(\"" + current_token_.value + "\\n\");");
         next_token();
     }
     else
     {
+        emitter_.emit(std::string("printf(\"%") + ".2f\\n\",float(");
         expression();
+        emitter_.emit_line("));");
     }
 }
 
 void parser::if_statement() // NOLINT
 {
     next_token();
+    emitter_.emit("if(");
+
     comparison();
+
     match_current_token(token::tkn_type::tkn_then);
     newline();
+    emitter_.emit_line("){");
 
     while (!check_current_token(token::tkn_type::tkn_endif))
     {
@@ -109,14 +117,19 @@ void parser::if_statement() // NOLINT
     }
 
     match_current_token(token::tkn_type::tkn_endif);
+    emitter_.emit_line("}");
 }
 
 void parser::while_statement() // NOLINT
 {
     next_token();
+    emitter_.emit("while(");
+
     comparison();
+
     match_current_token(token::tkn_type::tkn_repeat);
     newline();
+    emitter_.emit_line("){");
 
     while (!check_current_token(token::tkn_type::tkn_endwhile))
     {
@@ -124,6 +137,7 @@ void parser::while_statement() // NOLINT
     }
 
     match_current_token(token::tkn_type::tkn_endwhile);
+    emitter_.emit_line("}");
 }
 
 void parser::label_statement()
@@ -138,6 +152,8 @@ void parser::label_statement()
 
     declared_labels_.insert(current_token_.value);
 
+    emitter_.emit_line(current_token_.value + ":");
+
     match_current_token(token::tkn_type::tkn_identifier);
 }
 
@@ -147,6 +163,8 @@ void parser::goto_statement()
 
     // Goto statements can reference labels before they are declared
     requested_labels_.insert(current_token_.value);
+
+    emitter_.emit_line("goto " + current_token_.value + ";");
 
     match_current_token(token::tkn_type::tkn_identifier);
 }
@@ -159,7 +177,14 @@ void parser::input_statement()
     if (!declared_identifiers_.contains(current_token_.value))
     {
         declared_identifiers_.insert(current_token_.value);
+        emitter_.emit_header_line("float " + current_token_.value + ";");
     }
+
+    // Boilerplate code to handle invalid input
+    emitter_.emit_line("if(scanf(\"%f\",&" + current_token_.value + ")==EOF){");
+    emitter_.emit_line(R"(printf("Error: Invalid input\n");)");
+    emitter_.emit_line("exit(EXIT_FAILURE);");
+    emitter_.emit_line("}");
 
     match_current_token(token::tkn_type::tkn_identifier);
 }
@@ -172,21 +197,26 @@ void parser::let_statement()
     if (!declared_identifiers_.contains(current_token_.value))
     {
         declared_identifiers_.insert(current_token_.value);
+        emitter_.emit_header_line("float " + current_token_.value + ";");
     }
+
+    emitter_.emit(current_token_.value + "=");
 
     match_current_token(token::tkn_type::tkn_identifier);
     match_current_token(token::tkn_type::tkn_eq);
+
     expression();
+
+    emitter_.emit_line(";");
 }
 
 void parser::comparison()
 {
-    std::cout << "COMPARISON\n";
-
     expression();
 
     if (is_comparison_op(current_token_.type))
     {
+        emitter_.emit(current_token_.value);
         next_token();
         expression();
     }
@@ -198,12 +228,11 @@ void parser::comparison()
 
 void parser::expression()
 {
-    std::cout << "EXPRESSION\n";
-
     term();
 
     while (check_current_token(token::tkn_type::tkn_plus) || check_current_token(token::tkn_type::tkn_minus))
     {
+        emitter_.emit(current_token_.value);
         next_token();
         term();
     }
@@ -211,12 +240,11 @@ void parser::expression()
 
 void parser::term()
 {
-    std::cout << "TERM\n";
-
     unary();
 
     while (check_current_token(token::tkn_type::tkn_mult) || check_current_token(token::tkn_type::tkn_div))
     {
+        emitter_.emit(current_token_.value);
         next_token();
         unary();
     }
@@ -224,10 +252,9 @@ void parser::term()
 
 void parser::unary()
 {
-    std::cout << "UNARY\n";
-
     if (check_current_token(token::tkn_type::tkn_plus) || check_current_token(token::tkn_type::tkn_minus))
     {
+        emitter_.emit(current_token_.value);
         next_token();
     }
 
@@ -238,7 +265,7 @@ void parser::primary()
 {
     if (check_current_token(token::tkn_type::tkn_number))
     {
-        std::cout << "PRIMARY: " << current_token_.value << "\n";
+        emitter_.emit(current_token_.value);
         next_token();
     }
     else if (check_current_token(token::tkn_type::tkn_identifier))
@@ -249,7 +276,7 @@ void parser::primary()
             abort("Variable referenced before assignment \"" + current_token_.value + "\"");
         }
 
-        std::cout << "PRIMARY: " << current_token_.value << "\n";
+        emitter_.emit(current_token_.value);
         next_token();
     }
     else
@@ -260,8 +287,6 @@ void parser::primary()
 
 void parser::newline()
 {
-    std::cout << "NEWLINE\n";
-
     // Require at least one newline
     match_current_token(token::tkn_type::tkn_newline);
 

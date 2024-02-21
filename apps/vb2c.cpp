@@ -20,11 +20,13 @@ int main()
     std::string source = buffer.str();
 
     lexer lexer(source);
-    parser parser(lexer);
+    emitter emitter("output");
+    parser parser(lexer, emitter);
 
     parser.program();
+    emitter.write_file();
 
-    std::cout << "Parsing complete.\n";
+    std::cout << "Compilation completed with no errors.\n";
 
     return 0;
 }
