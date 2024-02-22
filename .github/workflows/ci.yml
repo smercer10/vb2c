@@ -1,0 +1,19 @@
+name: vb2c CI
+on: [ push, pull_request ]
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [ g++, clang++ ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build and test CMake project
+        uses: threeal/cmake-action@v1.3.0
+        with:
+          generator: Ninja
+          cxx-compiler: ${{ matrix.compiler }}
+          run-build: true
+          run-test: true
