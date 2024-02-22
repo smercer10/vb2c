@@ -47,7 +47,7 @@ namespace token
         [[nodiscard]] std::string type_as_string() const;
     };
 
-    tkn_type type_from_string(const std::string& str);
+    tkn_type type_from_string(const std::string &str);
     bool is_keyword(tkn_type type);
     bool is_comparison_op(tkn_type type);
-}
+} // namespace token

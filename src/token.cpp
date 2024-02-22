@@ -66,7 +66,7 @@ std::string token::token::type_as_string() const
     }
 }
 
-token::tkn_type token::type_from_string(const std::string& str)
+token::tkn_type token::type_from_string(const std::string &str)
 {
     using enum tkn_type;
 

@@ -1,9 +1,9 @@
 // ReSharper disable CppDFAEndlessLoop
 // ReSharper disable CppDFAUnreachableCode
 #include "vb2c/parser.h"
-#include "vb2c/token.h"
 #include <iostream>
 #include <string>
+#include "vb2c/token.h"
 
 void parser::program()
 {
@@ -32,7 +32,7 @@ void parser::program()
     emitter_.emit_line("}");
 
     // Check for any requested labels that were not declared
-    for (const auto& label : requested_labels_)
+    for (const auto &label : requested_labels_)
     {
         if (!declared_labels_.contains(label))
         {
@@ -299,7 +299,7 @@ void parser::newline()
     }
 }
 
-void parser::abort(const std::string& msg)
+void parser::abort(const std::string &msg)
 {
     std::cerr << "Parser error: " + msg + "\n";
 
@@ -317,15 +317,9 @@ void parser::match_current_token(const token::tkn_type type)
     next_token();
 }
 
-bool parser::check_current_token(const token::tkn_type type) const
-{
-    return type == current_token_.type;
-}
+bool parser::check_current_token(const token::tkn_type type) const { return type == current_token_.type; }
 
-bool parser::check_peek_token(const token::tkn_type type) const
-{
-    return type == peek_token_.type;
-}
+bool parser::check_peek_token(const token::tkn_type type) const { return type == peek_token_.type; }
 
 void parser::next_token()
 {

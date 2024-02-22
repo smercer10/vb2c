@@ -1,7 +1,7 @@
 // The following tests validate the parser and emitter together
-#include "vb2c/parser.h"
-#include "vb2c/emitter.h"
 #include <gtest/gtest.h>
+#include "vb2c/emitter.h"
+#include "vb2c/parser.h"
 
 TEST(EmitterTest, Average)
 {

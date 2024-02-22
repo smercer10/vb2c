@@ -1,18 +1,15 @@
 #pragma once
-#include "vb2c/lexer.h"
-#include "vb2c/token.h"
-#include "vb2c/emitter.h"
 #include <string>
 #include <unordered_set>
+#include "vb2c/emitter.h"
+#include "vb2c/lexer.h"
+#include "vb2c/token.h"
 
 class parser
 {
 public:
-    explicit parser(lexer& lexer, emitter& emitter)
-        : lexer_{lexer},
-          emitter_{emitter},
-          has_print_statement_{false},
-          has_input_statement_{false}
+    explicit parser(lexer &lexer, emitter &emitter) :
+        lexer_{lexer}, emitter_{emitter}, has_print_statement_{false}, has_input_statement_{false}
     {
         token::token init;
         init.type = token::tkn_type::tkn_eof;
@@ -28,8 +25,8 @@ public:
     void program();
 
 private:
-    lexer& lexer_;
-    emitter& emitter_;
+    lexer &lexer_;
+    emitter &emitter_;
     token::token current_token_;
     token::token peek_token_;
     bool has_print_statement_;
@@ -81,7 +78,7 @@ private:
     // Grammar: {newline}
     void newline();
 
-    static void abort(const std::string& msg);
+    static void abort(const std::string &msg);
 
     // Aborts if it doesn't match
     void match_current_token(token::tkn_type type);

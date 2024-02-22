@@ -57,10 +57,10 @@ TEST(LexerTest, IfStatement)
     using enum token::tkn_type;
 
     lexer lexer("#  Check if a is equal to b   \n"
-        " IF lemon==   GREEN_APPLE  THEN\n"
-        "   PRINT    \"lemon is equal to GREEN_APPLE\"\n"
-        "   GOTO   40\n"
-        "ENDIF  ");
+                " IF lemon==   GREEN_APPLE  THEN\n"
+                "   PRINT    \"lemon is equal to GREEN_APPLE\"\n"
+                "   GOTO   40\n"
+                "ENDIF  ");
 
     token::token token{lexer.get_token()};
     ASSERT_EQ(token.type, tkn_newline);
@@ -132,10 +132,10 @@ TEST(LexerTest, WhileLoop)
     using enum token::tkn_type;
 
     lexer lexer(" INPUT i  \n"
-        "WHILE  i   <10\n"
-        "   PRINT i  \n  "
-        "   LET i=   i +  1\n"
-        "  ENDWHILE");
+                "WHILE  i   <10\n"
+                "   PRINT i  \n  "
+                "   LET i=   i +  1\n"
+                "  ENDWHILE");
 
     token::token token{lexer.get_token()};
     ASSERT_EQ(token.type, tkn_input);

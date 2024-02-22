@@ -1,8 +1,8 @@
 #include "vb2c/lexer.h"
-#include "vb2c/token.h"
 #include <cctype>
 #include <iostream>
 #include <string>
+#include "vb2c/token.h"
 
 token::token lexer::get_token()
 {
@@ -124,7 +124,7 @@ token::token lexer::get_token()
     return token;
 }
 
-void lexer::process_string(token::token& token)
+void lexer::process_string(token::token &token)
 {
     std::string chars;
     const std::string illegal_chars{"\r\n\t\\%"};
@@ -147,7 +147,7 @@ void lexer::process_string(token::token& token)
     token.type = token::tkn_type::tkn_string;
 }
 
-void lexer::process_number(token::token& token)
+void lexer::process_number(token::token &token)
 {
     std::string chars;
 
@@ -184,7 +184,7 @@ void lexer::process_number(token::token& token)
     token.type = token::tkn_type::tkn_number;
 }
 
-void lexer::process_identifier(token::token& token)
+void lexer::process_identifier(token::token &token)
 {
     std::string chars;
 
@@ -211,10 +211,9 @@ void lexer::process_identifier(token::token& token)
 }
 
 
-void lexer::abort(const std::string& msg) const
+void lexer::abort(const std::string &msg) const
 {
-    std::cerr << "Lexer error: " + msg
-        << "\nLn " << line_num_ << ", Col " << col_num_ - 1 << "\n";
+    std::cerr << "Lexer error: " + msg << "\nLn " << line_num_ << ", Col " << col_num_ - 1 << "\n";
 
     std::exit(1);
 }
@@ -226,10 +225,7 @@ void lexer::next_char()
     curr_char_ = (curr_pos_ >= source_.length()) ? '\0' : source_[curr_pos_];
 }
 
-char lexer::peek() const
-{
-    return (curr_pos_ + 1 >= source_.length()) ? '\0' : source_[curr_pos_ + 1];
-}
+char lexer::peek() const { return (curr_pos_ + 1 >= source_.length()) ? '\0' : source_[curr_pos_ + 1]; }
 
 void lexer::skip_whitespace()
 {

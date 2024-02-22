@@ -1,11 +1,11 @@
-#include "vb2c/lexer.h"
-#include "vb2c/parser.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include "vb2c/lexer.h"
+#include "vb2c/parser.h"
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     std::string source_path;
     std::string output_path;
@@ -23,16 +23,16 @@ int main(int argc, char* argv[])
             output_path = optarg;
             break;
         default:
-            std::cerr << "Invalid option.\n\n" <<
-                "Usage: vb2c -s <source file path> [-o <output filepath>]\n";
+            std::cerr << "Invalid option.\n\n"
+                      << "Usage: vb2c -s <source file path> [-o <output filepath>]\n";
             return 1;
         }
     }
 
     if (source_path.empty())
     {
-        std::cerr << "Source file path is required.\n\n" <<
-            "Usage: vb2c -s <source file path> [-o <output file path>]\n";
+        std::cerr << "Source file path is required.\n\n"
+                  << "Usage: vb2c -s <source file path> [-o <output file path>]\n";
         return 1;
     }
 
