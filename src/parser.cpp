@@ -177,10 +177,11 @@ void parser::input_statement()
     if (!declared_identifiers_.contains(current_token_.value))
     {
         declared_identifiers_.insert(current_token_.value);
+        // Follows old C convention of declaring all variables at the top of the function
         emitter_.emit_header_line("float " + current_token_.value + ";");
     }
 
-    // Boilerplate code to handle invalid input
+    // Boilerplate C code to handle invalid input
     emitter_.emit_line("if(scanf(\"%f\",&" + current_token_.value + ")==EOF){");
     emitter_.emit_line(R"(printf("Error: Invalid input\n");)");
     emitter_.emit_line("exit(EXIT_FAILURE);");
@@ -197,6 +198,7 @@ void parser::let_statement()
     if (!declared_identifiers_.contains(current_token_.value))
     {
         declared_identifiers_.insert(current_token_.value);
+        // Follows old C convention of declaring all variables at the top of the function
         emitter_.emit_header_line("float " + current_token_.value + ";");
     }
 

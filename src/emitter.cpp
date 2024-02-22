@@ -33,3 +33,8 @@ void emitter::header_prepend(const std::string& code)
 {
     header_ = code + "\n" + header_;
 }
+
+std::string emitter::get_combined() const
+{
+    return header_ + code_;
+}

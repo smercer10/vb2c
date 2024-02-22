@@ -15,6 +15,7 @@ public:
     void emit_line(const std::string& code); // Same as emit, but adds a newline
     void emit_header_line(const std::string& code);
     void header_prepend(const std::string& code); // For adding conditional includes
+    [[nodiscard]] std::string get_combined() const; // For testing
 
 private:
     const std::string output_path_;
