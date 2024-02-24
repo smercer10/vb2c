@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "vb2c/token.h"
+#include "token.h"
 
 class lexer
 {

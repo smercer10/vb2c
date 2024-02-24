@@ -3,7 +3,6 @@
 #include "vb2c/parser.h"
 #include <iostream>
 #include <string>
-#include "vb2c/token.h"
 
 void parser::program()
 {
@@ -318,8 +317,6 @@ void parser::match_current_token(const token::tkn_type type)
 }
 
 bool parser::check_current_token(const token::tkn_type type) const { return type == current_token_.type; }
-
-bool parser::check_peek_token(const token::tkn_type type) const { return type == peek_token_.type; }
 
 void parser::next_token()
 {

@@ -2,7 +2,6 @@
 #include <cctype>
 #include <iostream>
 #include <string>
-#include "vb2c/token.h"
 
 token::token lexer::get_token()
 {

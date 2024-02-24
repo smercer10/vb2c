@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <unordered_set>
-#include "vb2c/emitter.h"
-#include "vb2c/lexer.h"
-#include "vb2c/token.h"
+#include "emitter.h"
+#include "lexer.h"
+#include "token.h"
 
 class parser
 {
@@ -84,6 +84,5 @@ private:
     void match_current_token(token::tkn_type type);
 
     bool check_current_token(token::tkn_type type) const;
-    bool check_peek_token(token::tkn_type type) const;
     void next_token();
 };
