@@ -8,7 +8,7 @@ jobs:
       matrix:
         compiler: [ g++, clang++ ]
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v4
       - name: Build and test CMake project
         uses: threeal/cmake-action@v1.3.0
