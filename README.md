@@ -1,6 +1,6 @@
 # vb2c
 
-**vb2c** compiles a unique dialect of **BASIC**, **Very BASIC**, to **C**.
+vb2c compiles a unique dialect of BASIC, Very BASIC, to C.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/smercer10/vb2c/blob/main/LICENSE)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/smercer10/vb2c/ci.yml?label=CI)](https://github.com/smercer10/vb2c/actions/workflows/ci.yml)
@@ -25,9 +25,9 @@
 vb2c -s <path to source file> [-o <path to output file>]
 ```
 
-If unspecified, the default output file is **out.c** in the current working directory.
+If unspecified, the default output file is `out.c` in the current working directory.
 
-The **vbas** file extension is recommended for **Very BASIC** source code, but it is by no means required.
+The `vbas` file extension is recommended for Very BASIC source code, but it is by no means required.
 
 ## Example
 
@@ -97,7 +97,7 @@ int main(void)
 
 ## Grammar Specification
 
-The current **Very BASIC** grammar is defined by the following **EBNF**:
+The current Very BASIC grammar is defined by the following EBNF:
 
 ```ebnf
 program ::= {statement}
@@ -120,10 +120,10 @@ newline ::= "\n"+
 
 ### Prerequisites
 
-- **C++20** compiler (tested with **g++** and **clang++**)
-- **CMake** 3.14+
-- **Clang-Format** (optional)
-- **Clang-Tidy** (optional)
+- C++20 compiler (tested with GCC and Clang)
+- CMake 3.14+
+- Clang-Format (optional)
+- Clang-Tidy (optional)
 
 ### Steps
 
@@ -153,9 +153,9 @@ newline ::= "\n"+
 
 ## Running Tests
 
-The project utilises the **GoogleTest** framework with **CTest**.
+The project utilises the GoogleTest framework with CTest.
 
-To execute the testcases, run the following command from the project root directory:
+To execute the testcases, run the following command from the project root:
 
 ```bash
   cmake --build build --target test
@@ -169,6 +169,4 @@ See [open issues](https://github.com/smercer10/vb2c/issues) for ways to get star
 
 ## Acknowledgements
 
-The project was heavily inspired by
-the incredible [blog series](https://austinhenley.com/blog/teenytinycompiler1.html)
-from [Austin Henley](https://github.com/AZHenley).
+The compiler design is based on the excellent [blog series](https://austinhenley.com/blog/teenytinycompiler1.html) by Austin Henley.
